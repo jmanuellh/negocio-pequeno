@@ -11,20 +11,29 @@ namespace negocio_pequeño.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ConsoleRentalsController : ControllerBase
+    public class ConsoleRentalsConsolesController : ControllerBase
     {
         private readonly Context _context;
 
-        public ConsoleRentalsController(Context context)
+        public ConsoleRentalsConsolesController(Context context)
         {
             _context = context;
         }
 
-        // GET: api/ConsoleRentals
+        // GET: api/ConsoleRentalsConsoles
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ConsoleRental>>> GetConsoleRentals()
+        public async Task<ActionResult<IEnumerable<ConsoleRental>>> GetConsoleRentalsConsoles()
         {
-            return await _context.ConsoleRentals
+            return await _context.ConsoleRentals.ToListAsync();
+        }
+
+        // GET: api/ConsoleRentalsConsoles/5
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ConsoleRental>> GetConsoleRentalConsole(int id)
+        {
+            // var consoleRental = await _context.ConsoleRentals.FindAsync(id);
+            // ConsoleRental consoleRentalFind = await _context.ConsoleRentals.FindAsync(id);
+            ConsoleRental consoleRentalJoin = await _context.ConsoleRentals
                 .Join(
                     _context.Consoles,
                     consoleRental => consoleRental.Console.Id,
@@ -34,32 +43,22 @@ namespace negocio_pequeño.Controllers
                         StartDate = consoleRental.StartDate,
                         EndDate = consoleRental.EndDate,
                         CustomerName = consoleRental.CustomerName,
-                        ConsoleId = consoleRental.ConsoleId,
                         Console = console
-                    }
-                )
-                .ToListAsync();
-        }
+                    }).FirstOrDefaultAsync(i => i.Id == id);
 
-        // GET: api/ConsoleRentals/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<ConsoleRental>> GetConsoleRental(int id)
-        {
-            var consoleRental = await _context.ConsoleRentals.FindAsync(id);
-
-            if (consoleRental == null)
+            if (consoleRentalJoin == null)
             {
                 return NotFound();
             }
 
-            return consoleRental;
+            return consoleRentalJoin;
         }
 
         // PUT: api/ConsoleRentals/5
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutConsoleRental(int id, ConsoleRental consoleRental)
+        public async Task<IActionResult> PutConsoleRentalConsole(int id, ConsoleRental consoleRental)
         {
             if (id != consoleRental.Id)
             {
@@ -74,7 +73,7 @@ namespace negocio_pequeño.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!ConsoleRentalExists(id))
+                if (!ConsoleRentalConsoleExists(id))
                 {
                     return NotFound();
                 }
@@ -91,7 +90,7 @@ namespace negocio_pequeño.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPost]
-        public async Task<ActionResult<ConsoleRental>> PostConsoleRental(ConsoleRental consoleRental)
+        public async Task<ActionResult<ConsoleRental>> PostConsoleRentalConsole(ConsoleRental consoleRental)
         {
             _context.ConsoleRentals.Add(consoleRental);
             await _context.SaveChangesAsync();
@@ -101,7 +100,7 @@ namespace negocio_pequeño.Controllers
 
         // DELETE: api/ConsoleRentals/5
         [HttpDelete("{id}")]
-        public async Task<ActionResult<ConsoleRental>> DeleteConsoleRental(int id)
+        public async Task<ActionResult<ConsoleRental>> DeleteConsoleRentalConsole(int id)
         {
             var consoleRental = await _context.ConsoleRentals.FindAsync(id);
             if (consoleRental == null)
@@ -115,7 +114,7 @@ namespace negocio_pequeño.Controllers
             return consoleRental;
         }
 
-        private bool ConsoleRentalExists(int id)
+        private bool ConsoleRentalConsoleExists(int id)
         {
             return _context.ConsoleRentals.Any(e => e.Id == id);
         }
