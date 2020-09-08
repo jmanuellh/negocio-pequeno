@@ -10,8 +10,8 @@ using negocio_pequeño.Models;
 namespace negocio_pequeño.Migrations
 {
     [DbContext(typeof(Context))]
-    [Migration("20200906055912_CreadoInternetRentayMovilDispositivo")]
-    partial class CreadoInternetRentayMovilDispositivo
+    [Migration("20200908075310_AddInternetRYDispositivos")]
+    partial class AddInternetRYDispositivos
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -75,7 +75,7 @@ namespace negocio_pequeño.Migrations
                     b.Property<DateTime>("FechaFin")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("MovilDispositivoId")
+                    b.Property<int>("MovilDispositivoId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -116,7 +116,9 @@ namespace negocio_pequeño.Migrations
                 {
                     b.HasOne("MovilDispositivo", "MovilDispositivo")
                         .WithMany()
-                        .HasForeignKey("MovilDispositivoId");
+                        .HasForeignKey("MovilDispositivoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace negocio_pequeño.Migrations
 {
-    public partial class CreadoInternetRentayMovilDispositivo : Migration
+    public partial class AddInternetRYDispositivos : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -27,9 +27,9 @@ namespace negocio_pequeño.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
+                    MovilDispositivoId = table.Column<int>(nullable: false),
                     FechaFin = table.Column<DateTime>(nullable: false),
-                    Dinero = table.Column<int>(nullable: false),
-                    MovilDispositivoId = table.Column<int>(nullable: true)
+                    Dinero = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -39,7 +39,7 @@ namespace negocio_pequeño.Migrations
                         column: x => x.MovilDispositivoId,
                         principalTable: "MovilDispositivos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(

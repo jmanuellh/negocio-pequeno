@@ -73,7 +73,7 @@ namespace negocio_pequeño.Migrations
                     b.Property<DateTime>("FechaFin")
                         .HasColumnType("datetime2");
 
-                    b.Property<int?>("MovilDispositivoId")
+                    b.Property<int>("MovilDispositivoId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -114,7 +114,9 @@ namespace negocio_pequeño.Migrations
                 {
                     b.HasOne("MovilDispositivo", "MovilDispositivo")
                         .WithMany()
-                        .HasForeignKey("MovilDispositivoId");
+                        .HasForeignKey("MovilDispositivoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }
