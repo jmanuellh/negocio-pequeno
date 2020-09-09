@@ -24,13 +24,13 @@ namespace negocio_pequeño.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<InternetRenta>>> GetInternetRentas()
         {
-            // return await _context.InternetRentas.ToListAsync();
             return await _context.InternetRentas.Join(
                 _context.MovilDispositivos,
                 internetRenta => internetRenta.MovilDispositivo.Id,
                 movilDispositivo => movilDispositivo.Id,
                 (internetRenta, movilDispositivo) => new InternetRenta {
                     Id = internetRenta.Id,
+                    MovilDispositivoId = internetRenta.MovilDispositivoId,
                     FechaFin = internetRenta.FechaFin,
                     Dinero = internetRenta.Dinero,
                     MovilDispositivo = movilDispositivo
