@@ -10,5 +10,6 @@ namespace negocio_pequeño.Models
         public Microsoft.EntityFrameworkCore.DbSet<ConsoleRental> ConsoleRentals { get; set; }
         public Microsoft.EntityFrameworkCore.DbSet<MovilDispositivo> MovilDispositivos {get;set;}
         public Microsoft.EntityFrameworkCore.DbSet<InternetRenta> InternetRentas {get;set;}
+        public Microsoft.EntityFrameworkCore.DbSet<Product.Product> Product {get;set;}
     }
 }
