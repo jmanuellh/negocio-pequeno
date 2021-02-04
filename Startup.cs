@@ -30,7 +30,7 @@ namespace negocio_pequeño
             services.AddControllers();
 
             services.AddDbContext<Models.Context>(opt =>
-               opt.UseSqlServer("Server=ASUS-PC\\SQLEXPRESS;Database=tienda;User Id=jmanuellh;Password=12345;"));
+               opt.UseSqlServer(Configuration["negocio2Coneccion"]));
 
             services.AddCors(o => o.AddPolicy("MyPolicy", builder =>
             {
