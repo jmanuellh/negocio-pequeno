@@ -113,5 +113,19 @@ namespace negocio_pequeño.Controllers
         {
             return _context.Product.Any(e => e.Id == id);
         }
+
+        [HttpPost("search")]
+        public async Task<ActionResult<IEnumerable<Product>>> SearchProducts(Product product)
+        {
+            Console.WriteLine(product);
+            var query = _context
+                .Product;
+
+            if(product.Nombre != null) {
+                query.Where(p=> p.Nombre == product.Nombre);
+            }
+
+            return await query.ToListAsync();
+        }
     }
 }
