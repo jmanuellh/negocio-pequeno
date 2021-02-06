@@ -123,5 +123,12 @@ namespace negocio_pequeño.Controllers
             query = Convert.ToBoolean(product.PrecioVenta) ? query.Where(p => p.PrecioVenta == product.PrecioVenta) : query;
             return await query.OrderBy(p => p.Id).ToListAsync();
         }
+
+        [HttpPost("paginated")]
+        public async Task<ActionResult<IEnumerable<Product>>> GetPaginatedProduct(Pagination pagination)
+        {
+            var query = _context.Product.Skip((pagination.pageNumber-1) * pagination.pageSize).Take(pagination.pageSize);
+            return await query.OrderBy(p => p.Id).ToListAsync();
+        }
     }
 }
