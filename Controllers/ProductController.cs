@@ -117,15 +117,11 @@ namespace negocio_pequeño.Controllers
         [HttpPost("search")]
         public async Task<ActionResult<IEnumerable<Product>>> SearchProducts(Product product)
         {
-            Console.WriteLine(product);
-            var query = _context
-                .Product;
-
-            if(product.Nombre != null) {
-                query.Where(p=> p.Nombre == product.Nombre);
-            }
-
-            return await query.ToListAsync();
+            IQueryable<Product> query = _context.Product;
+            query = Convert.ToBoolean(product.Id) ? query.Where(p => p.Id == product.Id) : query;
+            query = product.Nombre != null ? query.Where(p => EF.Functions.Like(p.Nombre, $"%{product.Nombre}%")) : query;
+            query = Convert.ToBoolean(product.PrecioVenta) ? query.Where(p => p.PrecioVenta == product.PrecioVenta) : query;
+            return await query.OrderBy(p => p.Id).ToListAsync();
         }
     }
 }
