@@ -125,10 +125,13 @@ namespace negocio_pequeño.Controllers
         }
 
         [HttpPost("paginated")]
-        public async Task<ActionResult<IEnumerable<Product>>> GetPaginatedProduct(Pagination pagination)
+        public async Task<ActionResult<PaginatedProduct>> GetPaginatedProduct(Pagination pagination)
         {
-            var query = _context.Product.Skip((pagination.pageNumber-1) * pagination.pageSize).Take(pagination.pageSize);
-            return await query.OrderBy(p => p.Id).ToListAsync();
+            var query = _context.Product.Skip((pagination.Page-1) * pagination.ItemsPerPage).Take(pagination.ItemsPerPage);
+            return new PaginatedProduct {
+                Product = await query.OrderBy(p => p.Id).ToListAsync(),
+                ServerItemsLength = _context.Product.Count()
+            };
         }
     }
 }
