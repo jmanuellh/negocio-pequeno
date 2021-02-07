@@ -114,23 +114,32 @@ namespace negocio_pequeño.Controllers
             return _context.Product.Any(e => e.Id == id);
         }
 
-        [HttpPost("search")]
-        public async Task<ActionResult<IEnumerable<Product>>> SearchProducts(Product product)
+        private IQueryable<Product> SearchProducts(IQueryable<Product> query, Product product)
         {
-            IQueryable<Product> query = _context.Product;
             query = Convert.ToBoolean(product.Id) ? query.Where(p => p.Id == product.Id) : query;
             query = product.Nombre != null ? query.Where(p => EF.Functions.Like(p.Nombre, $"%{product.Nombre}%")) : query;
             query = Convert.ToBoolean(product.PrecioVenta) ? query.Where(p => p.PrecioVenta == product.PrecioVenta) : query;
-            return await query.OrderBy(p => p.Id).ToListAsync();
+            return query;
         }
 
-        [HttpPost("paginated")]
-        public async Task<ActionResult<PaginatedProduct>> GetPaginatedProduct(Pagination pagination)
+        private IQueryable<Product> GetPaginatedProduct(IQueryable<Product> query, Pagination options)
         {
-            var query = _context.Product.Skip((pagination.Page-1) * pagination.ItemsPerPage).Take(pagination.ItemsPerPage);
+            if (options.ItemsPerPage == -1) return query.Take(10000);
+            return query.Skip((options.Page-1) * options.ItemsPerPage).Take(options.ItemsPerPage);
+        }
+
+        [HttpPost("withOptions")]
+        public async Task<ActionResult<PaginatedProduct>> GetProductWithOptions(Pagination options)
+        {
+            IQueryable<Product> query = _context.Product;
+            
+            query = SearchProducts(query, options.Product);
+            int serverItemsLength = await query.CountAsync();
+
+            query = GetPaginatedProduct(query, options);
             return new PaginatedProduct {
                 Product = await query.OrderBy(p => p.Id).ToListAsync(),
-                ServerItemsLength = _context.Product.Count()
+                ServerItemsLength = serverItemsLength
             };
         }
     }
