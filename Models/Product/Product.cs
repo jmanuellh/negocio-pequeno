@@ -5,10 +5,10 @@ namespace negocio_pequeño.Models.Product
 {
     public class Product
     {
-        public int Id {get;set;}
+        public int Id {get;set;} = 0;
         [StringLength(50)]
-        public string Nombre {get;set;}
+        public string Nombre {get;set;} = null;
         [Column(TypeName = "decimal(4, 2)")]
-        public decimal PrecioVenta {get;set;}
+        public decimal PrecioVenta {get;set;} = 0;
     }    
 }

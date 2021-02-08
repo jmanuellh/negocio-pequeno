@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using negocio_pequeño.Models;
 using negocio_pequeño.Models.Product;
+using System.Linq.Dynamic.Core;
 
 namespace negocio_pequeño.Controllers
 {
@@ -25,6 +26,7 @@ namespace negocio_pequeño.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProduct()
         {
+            string asd = "Nombre";
             return await _context
                 .Product
                 .Select(p => new Product {
@@ -32,6 +34,7 @@ namespace negocio_pequeño.Controllers
                     Nombre = p.Nombre,
                     PrecioVenta = p.PrecioVenta
                 })
+                .OrderBy(asd)
                 .ToListAsync();
         }
 
@@ -137,8 +140,16 @@ namespace negocio_pequeño.Controllers
             int serverItemsLength = await query.CountAsync();
 
             query = GetPaginatedProduct(query, options);
+            if (options.sortDesc.Length != 0 && options.sortDesc[0] == true)
+            {
+                query = query.OrderBy(options.sortBy[0]+" desc");
+            }
+            else if(options.sortDesc.Length != 0)
+            {
+                query = query.OrderBy(options.sortBy[0]);
+            } else query = query.OrderBy(p => p.Id);
             return new PaginatedProduct {
-                Product = await query.OrderBy(p => p.Id).ToListAsync(),
+                Product = await query.ToListAsync(),
                 ServerItemsLength = serverItemsLength
             };
         }
