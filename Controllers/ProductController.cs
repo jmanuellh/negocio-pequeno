@@ -131,23 +131,31 @@ namespace negocio_pequeño.Controllers
             return query.Skip((options.Page-1) * options.ItemsPerPage).Take(options.ItemsPerPage);
         }
 
+        private IQueryable<Product> GetOrderProductQuery(IQueryable<Product> query, Pagination options)
+        {
+            if (options.sortDesc.Length != 0 && options.sortDesc[0] == true)
+            {
+                return query.OrderBy(options.sortBy[0]+" desc");
+            }
+            else if(options.sortDesc.Length != 0)
+            {
+                return query.OrderBy(options.sortBy[0]);
+            }
+            return query.OrderBy(p => p.Id);
+        }
+
         [HttpPost("withOptions")]
         public async Task<ActionResult<PaginatedProduct>> GetProductWithOptions(Pagination options)
         {
             IQueryable<Product> query = _context.Product;
-            
+            // Se busca
             query = SearchProducts(query, options.Product);
             int serverItemsLength = await query.CountAsync();
-
+            // Se ordena
+            query = GetOrderProductQuery(query,options);
+            // Se página
             query = GetPaginatedProduct(query, options);
-            if (options.sortDesc.Length != 0 && options.sortDesc[0] == true)
-            {
-                query = query.OrderBy(options.sortBy[0]+" desc");
-            }
-            else if(options.sortDesc.Length != 0)
-            {
-                query = query.OrderBy(options.sortBy[0]);
-            } else query = query.OrderBy(p => p.Id);
+
             return new PaginatedProduct {
                 Product = await query.ToListAsync(),
                 ServerItemsLength = serverItemsLength
