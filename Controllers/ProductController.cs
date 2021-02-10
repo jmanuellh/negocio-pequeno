@@ -29,11 +29,11 @@ namespace negocio_pequeño.Controllers
             string asd = "Nombre";
             return await _context
                 .Product
-                .Select(p => new Product {
-                    Id = p.Id,
-                    Nombre = p.Nombre,
-                    PrecioVenta = p.PrecioVenta
-                })
+                // .Select(p => new Product {
+                //     Id = p.Id,
+                //     Nombre = p.Nombre,
+                //     PrecioVenta = p.PrecioVenta
+                // })
                 .OrderBy(asd)
                 .ToListAsync();
         }
